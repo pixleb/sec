@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+ 
+{% block content %}
+
+<nav class = 'nav-menu'>
+            
+    <a href="/"> Главная </a>
+    <a href="/logout/"> Выйти </a>
+            
+</nav>
+
+<h2>
+    Изменение данных пользователя
+</h2>
+
+<fieldset>
+    <form method = 'post' action="">
+        
+        {% csrf_token %}
+        {{ form }}
+
+        <br>
+        <br>
+       
+        <button>
+            Подтвердить изменения
+        </button>
+                        
+    </form>
+    
+</fieldset>
+
+{% endblock %}

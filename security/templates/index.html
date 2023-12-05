@@ -1,0 +1,305 @@
+{% extends "base_generic.html" %}
+ 
+{% block content %}
+
+<nav class = 'nav-menu'>
+    <div class = 'whole-block'>
+        <a href="/"> Главная </a>
+        <a href="/logout/"> Выйти </a>
+    </div>    
+</nav>
+
+
+<div class = 'bg-default'>
+
+{% if role == "super" %}
+
+<div class = 'whole-block block-default'>
+
+<h1> Панель Суперпользователя </h1>
+
+<section class = 'inner-block' name = 'objects'>
+    <h2>
+        Объекты
+    </h2>
+    <div>
+        {% for obj in objects %}
+        <a href="/obj/{{ obj.id }}" class = 'nodecor'>
+            <div class='tile'>
+                <h3>
+                    {{ obj.name }}
+                </h3>
+                <p>
+                    Нажмите, чтобы открыть.
+                </p>
+
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+        <a href="/create_object/" class = 'nodecor'>
+            <div class='tile'>
+                <h3>
+                    + Создать объект
+                </h3>
+            </div>
+
+        </a>
+
+    </div>
+
+</section>
+
+</div>
+
+{% elif role == "admin" %}
+
+<div class = 'whole-block block-default'>
+
+
+<h1> Панель Админа (объект: {{ obj.name }}) </h1>
+
+<section class = 'inner-block' name = 'users'>
+    
+    <h2>
+        Пользователи:
+    </h2>
+    {% for each_user in users %}
+
+    <div class='tile'>
+        <h3>
+            {{ each_user.username }}
+        </h3>
+    </div>
+
+    {% endfor %}
+
+    <a href="/create_user/{{ obj.id }}" class = 'nodecor'>
+        <div class='tile'>
+            <h3>
+                + Создать пользователя
+            </h3>
+        </div>
+
+    </a>
+    
+    <h2>
+        Камеры:
+    </h2>
+    {% for each_camera in cameras %}
+
+    <div class='tile'>
+        <img src="/get_camera/{{each_camera.id}}">
+        <h3>
+            {{ each_camera.name }}
+        </h3>
+        <p>
+            {{ each_camera.rtsp }}
+        </p>
+        <a href="/delete_camera/{{each_camera.id}}">
+            Удалить камеру
+        </a>
+    </div>
+
+    {% endfor %}
+    
+    <a href="/create_camera/{{ obj.id }}" class = 'nodecor'>
+        <div class='tile'>
+            <h3>
+                + Создать камеру
+            </h3>
+        </div>
+
+    </a>
+    
+    <h2>
+        Замки:
+    </h2>
+    
+    
+    <!-- 
+        Здесь код обновляется с помощью промисов 
+        Логичнее конечно было сразу на реакте такой писать, но мы не
+        Amazon и не Google в конце концов
+    -->
+    <div id = 'locks'>
+        
+    </div>
+    <script>
+    
+        let locks = document.querySelector('#locks');
+        const objectID = {{ obj.id }};
+        
+        let locks_number = undefined;
+        
+        //promise commands
+        const postCommand = async (mac, command) => {
+            axios.post('/post_command/', {
+                'mac'     : mac,
+                'command' : command,
+            })
+                .then(res => console.log(res));
+        }
+        const postInverse = async (mac) => {
+            axios.post('/post_inverse/', {
+                'mac'     : mac,
+            })
+                .then(res => console.log(res));
+        }
+        
+        const updateLocks = async () => {
+            axios.get(`/get_locks/${objectID}`)
+                .then((res) => {
+                    let data = res.data;
+                    //console.log(res, typeof res, typeof data);
+                
+                    while (locks.firstChild) { locks.removeChild(locks.lastChild); }
+                    data.forEach(lock => {
+                        let lockDiv = document.createElement('div');
+                        lockDiv.className = 'tile';
+                        let state = lock.fields.state, controlsHTML;
+                        
+                        // никогда так не делайте, мне просто нужно написать это быстро
+                        if (state == 'Закрыт')
+                            controlsHTML = `
+                            <li onclick='postCommand("${lock.fields.mac}", "open")'>
+                                Открыть
+                            </li>
+                        `;
+                        else controlsHTML = `
+                            <li onclick='postCommand("${lock.fields.mac}", "close")'>
+                                Закрыть
+                            </li>
+                        `;
+                        //console.log(lock.fields);
+                        // uhuh php moment
+                        lockDiv.innerHTML = `
+                            <h3> ${lock.fields.name} </h3>
+                            MAC-адрес: ${lock.fields.mac} <br>
+                            Статус: ${lock.fields.status} <br>
+                            Заряд: ${lock.fields.power} <br>
+                            Положение замка: ${lock.fields.state} <br>
+                            <!-- Команда: ${lock.fields.command} <br> -->
+                            Инверсия: ${lock.fields.inverse} <br>
+                            Последнее обновление: ${lock.fields.updated} <br>
+                            <br>
+                            
+                            <ul>
+                                ${controlsHTML}
+                                <li onclick='postCommand("${lock.fields.mac}", "calibrate")'>
+                                    Перекалибровать
+                                </li>
+                                <li onclick='postInverse("${lock.fields.mac}")'>
+                                    Инвертировать
+                                </li>
+                            </ul>
+                        `;
+                        locks.appendChild(lockDiv);
+                    });
+                })
+                .catch((err) => {
+                    locks.innerHTML = `Ошибка сервера <br> ${err}`;
+                    console.log(err);
+                });
+        }
+        
+        let locksSchedule = setInterval(updateLocks, 1000);
+        
+        // onload
+        document.addEventListener("DOMContentLoaded", () => {
+            updateLocks();
+        });
+    
+    </script>
+    
+
+    <a href="/create_lock/{{ obj.id }}" class = 'nodecor'>
+        <div class='tile'>
+            <h3>
+                + Добавить замок
+            </h3>
+        </div>
+
+    </a>
+
+
+</section>
+
+</div>
+
+{% elif role == "user" %}
+
+<div class = 'whole-block block-default'>
+
+<h1> Панель Пользователя </h1>
+<h3>
+    Ваш объект: {{ obj.name }}
+</h3>
+
+<h4>
+    
+</h4>
+
+<!--
+
+    DRY? Что это?
+
+-->
+<div id='locks'>
+
+</div>
+<script>
+    let locks = document.querySelector('#locks');
+    const objectID = {{ obj.id }};
+
+    let locks_number = undefined;
+
+    const updateLocks = async () => {
+        axios.get(`/get_locks/${objectID}`)
+            .then((res) => {
+                let data = res.data;
+                console.log(res, typeof res, typeof data);
+
+                while (locks.firstChild) {
+                    locks.removeChild(locks.lastChild);
+                }
+                data.forEach(lock => {
+                    let lockDiv = document.createElement('div');
+                    lockDiv.className = 'tile';
+
+                    // никогда так не делайте, мне просто нужно написать это быстро
+                    lockDiv.innerHTML = `
+                            <h3> ${lock.fields.name} </h3>
+                            MAC-адрес: ${lock.fields.mac} <br>
+                            Статус: ${lock.fields.status} <br>
+                            Заряд: ${lock.fields.power} <br>
+                            Последнее обновление: ${lock.fields.updated} <br>
+                            <br>
+                        `;
+                    locks.appendChild(lockDiv);
+                });
+            })
+            .catch((err) => {
+                locks.innerHTML = `Ошибка сервера <br> ${err}`;
+                console.log(err);
+            });
+    }
+
+    let locksSchedule = setInterval(updateLocks, 2000);
+
+    // onload
+    document.addEventListener("DOMContentLoaded", () => {
+        updateLocks();
+    });
+</script>
+
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

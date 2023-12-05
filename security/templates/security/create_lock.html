@@ -1,0 +1,34 @@
+{% extends "base_generic.html" %}
+ 
+{% block content %}
+
+<nav class = 'nav-menu'>
+    <div class = 'whole-block'>
+        <a href="/"> Главная </a>
+        <a href="/logout/"> Выйти </a>
+    </div>    
+</nav>
+
+<div class = 'bg-default'>
+
+<fieldset class = 'whole-block block-default user-fieldset'>
+    <h2>
+        Создание замка
+    </h2>
+   
+    <form method = 'post' action="">
+        
+        {% csrf_token %}
+        {{ form }}
+       
+        <button>
+            Создать
+        </button>
+                        
+    </form>
+    
+</fieldset>
+
+</div>
+
+{% endblock %}

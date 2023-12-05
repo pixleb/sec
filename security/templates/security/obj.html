@@ -1,0 +1,63 @@
+{% extends "base_generic.html" %}
+ 
+{% block content %}
+
+<nav class = 'nav-menu'>
+    <div class = 'whole-block'>
+        <a href="/"> Главная </a>
+        <a href="/logout/"> Выйти </a>
+    </div>    
+</nav>
+
+<div class = 'bg-default'>
+
+<div class = 'whole-block block-default'>
+
+<h1>
+    Управление объектом {{ obj.name }}
+</h1>
+
+
+
+<div>
+    <h2> 
+        Администраторы:
+    </h2>
+    
+    <section class = 'inner-block' name = 'admins'>
+
+        {% for admin in admins %}
+
+        <a href="/edit_user/{{ admin.id }}/">
+            <div class='tile'>
+                <h3>
+                    {{ admin.username }}
+                </h3>
+                <!--
+                <p>
+                    Нажмите, чтобы редактировать.
+                </p>
+                -->
+            </div>
+        </a>
+
+        {% endfor %}
+
+        <a href="/create_admin/{{ obj.id }}/" class = 'nodecor'>
+            <div class = 'tile'>
+                <h3>
+                    + Создать администратора
+                </h3>
+            </div>
+
+        </a>
+
+    </section>
+    
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+beget
+spprojvq
+4COwghq8
+
+vps
+31.129.98.31
+root
+a*zTFFJ3tAKC
+
+prod server
+31.129.98.31:8000
+
+test stream:
+http://pendelcam.kip.uni-heidelberg.de/mjpg/video.mjpg

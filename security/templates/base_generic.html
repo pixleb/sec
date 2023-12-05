@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset = 'utf-8'>
+  <title> WeWatch </title>
+  
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+  
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  
+</head>
+
+<body style = 'margin: 0'>
+ 
+    <!-- Вынесено сюда, чтобы не кэшироваться при разработке -->
+    <style>
+    
+        :root { font-family: "Open Sans"; color: dimgray; --DefaultBlue: #16263D; }
+        
+        a { color: dimgray; }
+        
+        .user-fieldset { width: 50%; margin: auto; border-radius: 15px; background-color: white;
+            padding: 1rem; padding-top: 2rem; padding-bottom: 2rem; }
+        .user-fieldset input { width: 95%; margin-bottom: 2rem; padding: .5rem; margin-right: 5%;
+            border: 1px solid dimgray; border-radius: 15px; }
+        .user-fieldset button { border: 1px solid dimgray; border-radius: 15px; background-color: transparent;
+            padding: .5rem; padding-left: 1rem; padding-right: 1rem; }
+        
+        .whole-block { width: 60%; margin: auto; }
+        .inner-block { margin-left: 1rem; }
+        
+        .header { color: white !important; background-color: var(--DefaultBlue); padding-top: .5rem; padding-bottom: 1rem; }
+        .header h1 { margin: 0; }
+        .header p { margin: 0; color: #dddddd !important; }
+        
+        .nav-menu { display: flex; font-size: 16pt; background-color: white; }
+        .nav-menu a { padding-right: .5rem; text-decoration: none; }
+        
+        .bg-default { background-color: gainsboro; min-height: 90vh; padding-top: 2rem; padding-bottom: 2rem; }
+        
+        .block-default { background-color: white; border-radius: 15px; padding: .5rem; }
+        
+        .tile { border: 1px solid dimgray; border-radius: 15px; padding: .5rem; padding-left: 2rem; }
+        
+        .nodecor { text-decoration: none; }
+        
+        @media (orientation: portrait)
+        {
+            .whole-block { width: 90%; }
+            .user-fieldset { width: 75%; }
+        }
+        
+        
+    </style>
+  
+    <header class = 'header'>
+        <div class = 'whole-block'>
+            <h1> WeWatch </h1>
+            <p>
+                Охранные системы
+            </p>
+        </div>
+        
+    </header>
+    
+    <main class = ''>
+    {% block content %}
+    
+    {% endblock %}
+    </main>
+    
+    <footer class = ''>
+        
+    </footer>
+    
+</body>
+
+</html>

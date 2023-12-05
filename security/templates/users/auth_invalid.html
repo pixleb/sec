@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+ 
+{% block content %}
+
+<div class = 'bg-default'>
+
+<fieldset class = 'user-fieldset'>
+    <p>
+        Неверный логин или пароль.
+    </p>
+   
+    <form method = 'post' action="/auth/">
+        
+        {% csrf_token %}
+        {{ form }}
+       
+        <button>
+            Войти
+        </button>
+                        
+    </form>
+    
+</fieldset>
+
+</div>
+
+{% endblock %}
