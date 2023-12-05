@@ -25,6 +25,7 @@ urlpatterns = [
     path('create_lock/<int:obj>/', app.create_lock),
     path('get_locks/<int:obj>/', app.get_locks),
     path('post_lock/', app.post_lock),
+    path('delete_lock/<int:lock_id>/', app.delete_lock),
     path('post_command/', app.post_command),
     path('post_inverse/', app.post_inverse),
     

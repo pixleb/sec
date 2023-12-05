@@ -55,6 +55,18 @@ def create_lock(request, obj):
         else: return HttpResponse('Ошибка. Проверьте введенные данные и обратитесь к разработчику.')
     else: return render(request, 'security/create_lock.html', { 'form': LockForm() })
 
+# i know i should have putted delete method here, but i don't care
+@require_http_methods(['GET'])
+def delete_lock(request, lock_id):
+    user = request.user
+    role = UserMisc.objects.filter(owner = user).first().role
+    
+    if not user.is_authenticated or role != 'admin': return HttpResponseRedirect('/auth/')  
+    
+    lock = LockModel.objects.get(pk=lock_id)
+    lock.delete()
+    
+    return HttpResponseRedirect('/')
     
 # api views, responses with an json
 # i should've made it django-rest api view with a serializer, but i don't care
